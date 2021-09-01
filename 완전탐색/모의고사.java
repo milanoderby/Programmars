@@ -1,49 +1,41 @@
 import java.util.*;
 class Solution {
-    public int[] solution(int[] answers) {
+    public static int[] solution(int[] answers) {
         List<int[]> stamp = new ArrayList<>();
         stamp.add(new int[] {1, 2, 3, 4, 5});
         stamp.add(new int[] {2, 1, 2, 3, 2, 4, 2, 5});
         stamp.add(new int[] {3, 3, 1, 1, 2, 2, 4, 4, 5, 5});
 
-        int[] answerCount = new int[3];
-        for (int index = 0; index < answers.length; index++) {
-            int correctAnswer = answers[index];
-            for (int person = 0; person < 3; person++) {
-                int temp = (index % stamp.get(person).length);
-                int answerOfPerson = stamp.get(person)[temp];
-                if (answerOfPerson == correctAnswer) {
-                    answerCount[person]++;
+        List<Student> students = new ArrayList<>();
+        int highestScore = 0;
+        for (int number = 0; number < 3; number++) {
+            students.add(new Student(number, 0));
+            for (int index = 0; index < answers.length; index++) {
+                int correctAnswer = answers[index];
+                int problemNum = (index % stamp.get(number).length);
+                int answerOfStudent = stamp.get(number)[problemNum];
+                if (answerOfStudent == correctAnswer) {
+                    students.get(number).score++;
                 }
             }
+            highestScore = Math.max(highestScore, students.get(number).score);
         }
 
-        PriorityQueue<Scorer> answerCountPQ = new PriorityQueue<>(Comparator.comparingInt(Scorer::getScore).reversed());
-        for (int i = 0; i < answerCount.length; i++) {
-            answerCountPQ.add(new Scorer(i + 1, answerCount[i]));
-        }
-
-        List<Integer> highScorers = new ArrayList<>();
-        Scorer highScorer = answerCountPQ.poll();
-        highScorers.add(highScorer.person);
-        while (!answerCountPQ.isEmpty()) {
-            Scorer nextHighScorer = answerCountPQ.poll();
-            if (highScorer.score > nextHighScorer.score) {
-                break;
-            }
-            highScorers.add(nextHighScorer.person);
-        }
-        
-        return highScorers.stream().sorted().mapToInt(Integer::intValue).toArray();
+        final int finalHighestScore = highestScore;
+        return students.stream().filter(student -> student.getScore() == finalHighestScore).mapToInt(student -> student.getNumber() + 1).sorted().toArray();
     }
-    
-    private static class Scorer {
-        private int person;
+
+    private static class Student {
+        private int number;
         private int score;
 
-        public Scorer(int person, int score) {
-            this.person = person;
+        public Student(int number, int score) {
+            this.number = number;
             this.score = score;
+        }
+
+        public int getNumber() {
+            return number;
         }
 
         public int getScore() {
