@@ -10,7 +10,7 @@ class Solution {
         for (int num = 2; num < 10000000; num++) {
             isPrime[num] = true;
         }
-        makeNotPrimeNumbers(isPrime);
+        makePrimeNumbers(isPrime);
 
         int answer = 0;
         for (Integer number : permutationNumber) {
@@ -41,8 +41,8 @@ class Solution {
         }
     }
 
-    // 소수가 아닌 수들의 집합을 구합니다.
-    private static void makeNotPrimeNumbers(boolean[] isPrime) {
+    // 소수를 판별할 boolean 배열을 구합니다.
+    private static void makePrimeNumbers(boolean[] isPrime) {
         for (int num = 2; num * num <= maxPermutationNum; num++) {
             if (!isPrime[num]) {
                 continue;
