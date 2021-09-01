@@ -6,12 +6,15 @@ class Solution {
         Set<Integer> permutationNumber = new HashSet<>();
         makePermutations(numbers, 0, 0, new boolean[numbers.length()], permutationNumber);
 
-        Set<Integer> notPrimeNumbers = new HashSet<>();
-        makeNotPrimeNumbers(notPrimeNumbers);
+        boolean[] isPrime = new boolean[10000000];
+        for (int num = 2; num < 10000000; num++) {
+            isPrime[num] = true;
+        }
+        makeNotPrimeNumbers(isPrime);
 
         int answer = 0;
         for (Integer number : permutationNumber) {
-            if (!notPrimeNumbers.contains(number)) {
+            if (isPrime[number]) {
                 answer++;
             }
         }
@@ -39,16 +42,14 @@ class Solution {
     }
 
     // 소수가 아닌 수들의 집합을 구합니다.
-    private static void makeNotPrimeNumbers(Set<Integer> notPrimeNumbers) {
-        notPrimeNumbers.add(0);
-        notPrimeNumbers.add(1);
-        for (int i = 2; i * i <= maxPermutationNum; i++) {
-            if (notPrimeNumbers.contains(i)) {
+    private static void makeNotPrimeNumbers(boolean[] isPrime) {
+        for (int num = 2; num * num <= maxPermutationNum; num++) {
+            if (!isPrime[num]) {
                 continue;
             }
 
-            for (int j = i * i; j <= maxPermutationNum; j += i) {
-                notPrimeNumbers.add(j);
+            for (int multiple = num * num; multiple <= maxPermutationNum; multiple += num) {
+                isPrime[multiple] = false;
             }
         }
     }
